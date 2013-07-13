@@ -1,13 +1,14 @@
+var STATUS_WALK = 1;
+
 enchant();
 
-var IMG = ['img/bg.png','img/title.png','img/operation.png','img/stage01.png','img/stage02.png','img/stage03.png','images/icon0.png'];
+var IMG =['img/bg.png','img/title.png','img/operation.png','img/stage01.png','img/stage02.png','img/stage03.png','img/apple.png','img/apple_ks.png','img/bear.png'];
 
 window.onload = function() {
     var game = new Game(320, 320);
     game.fps = 16;
     game.tick = 0;
     game.preload(IMG);
-    
     
     var mainAPPLE = enchant.Class.create(enchant.Sprite,{
         initialize: function(speed){
@@ -36,7 +37,6 @@ window.onload = function() {
         initialize: function(scene, speed){
             mainAPPLE.call(this, speed);
             this.image = game.assets[ IMG[6] ];
-            this.frame = 15;
             scene.addChild(this);
         }
     });
@@ -44,11 +44,30 @@ window.onload = function() {
     var NibbleApple = enchant.Class.create(mainAPPLE,{
         initialize: function(scene, speed){
             mainAPPLE.call(this, speed);
-            this.image = game.assets[ IMG[6] ];
-            this.frame = 12;
+            this.image = game.assets[ IMG[7] ];
             scene.addChild(this);
         }
     });
+    
+    
+    var mainBEAR = enchant.Class.create(enchant.Sprite,{
+        initialize: function(scene){
+            enchant.Sprite.call(this, 47, 67);
+            this.image = game.assets[ IMG[8] ];
+            this.y = 320 - 67;
+            scene.addChild(this);
+        }
+    });
+    
+    var Bear = enchant.Class.create(mainBEAR,{
+        initialize: function(scene){
+            mainBEAR.call(this,scene);
+            this.frame = 0;
+            scene.addChild(this);
+        }
+    });
+    
+    
     
     /*//リンゴの追加
     game.addApple = function(x, speed, scene) {
@@ -85,7 +104,9 @@ window.onload = function() {
             game.pushScene(game.TitleScene());
         });
         game.rootScene.addChild(bg);
+    
     };
+    
     
     game.TitleScene = function( ) {
         var scene = new Scene ();
@@ -127,6 +148,23 @@ window.onload = function() {
                 new NibbleApple(scene, speed02);
             }
             game.tick++;
+        });
+        
+        var pad = new Pad();
+        pad.x = 0;
+        pad.y = 150;
+        scene.addChild(pad);
+        
+        var bear = new Bear(scene);
+        
+        bear.addEventListener(Event.ENTER_FRAME, function( ) {
+            if (game.input.left) {
+                bear.x -= 3;
+                bear.scaleX = -1;        
+            } else if (game.input.right) {
+                bear.x += 3;
+                bear.scaleX = 1;
+            }
         });
         
         return scene;
