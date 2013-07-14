@@ -164,10 +164,19 @@ window.onload = function() {
             }
         });
         
+        // 時間
+            timeLabel = new Label();
+            timeLabel.moveTo(245,5);
+            timeLabel.font = " 12px monospace";
+            timeLabel.text = 'Time: ';
+            timeLabel.color = '#999999';
+            scene.addChild(timeLabel);
+        
         // apple
         bg.addEventListener(Event.ENTER_FRAME, function( ) {
             var progress = parseInt(game.frame/game.fps);
-                    console.log(progress);
+            timeLabel.text = 'Time: ' + progress + '秒';
+            // リンゴの表示
             if(game.tick % 12 == 0 ) {
                 var speed = 3 + Math.floor(Math.random() * 6 );
                 var speed02 = 3 + Math.floor(Math.random() * 4 );
