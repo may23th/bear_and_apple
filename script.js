@@ -2,13 +2,14 @@ var STATUS_WALK = 1;
 
 enchant();
 
-var IMG =['img/bg.png','img/title.png','img/operation.png','img/stage01.png','img/stage02.png','img/stage03.png','img/apple.png','img/apple_ks.png','img/bear.png'];
+var IMG =['img/bg.png','img/title.png','img/operation.png','img/stage01.png','img/stage02.png','img/stage03.png','img/apple.png','img/apple_ks.png','img/bear.png','img/gameover.png','img/gameclear.png'];
+var BGM = ['bgm/jingle.mp3'];
 
 window.onload = function() {
     var game = new Game(320, 320);
     game.fps = 16;
     game.tick = 0;
-    game.preload(IMG);
+    game.preload(IMG, BGM);
     
     var mainAPPLE = enchant.Class.create(enchant.Sprite,{
         initialize: function(scene, speed, bear){
@@ -22,6 +23,7 @@ window.onload = function() {
         
                 var centX = Math.abs(bear.x - this.x);
                 var centY = Math.abs(bear.y - this.y);
+                
                 //クマと衝突
                 if (bear.x < this.x && bear.x + bear.width > this.x) {
                     if(bear.y - 13 < this.y && bear.y + bear.height > this.y) {
@@ -130,15 +132,20 @@ window.onload = function() {
         bg.image = game.assets[ IMG[2] ];
         scene.addChild(bg);
         bg.addEventListener(Event.TOUCH_START, function(e) {
-            game.pushScene(game.stage01());
+            game.pushScene(game.stage());
         });
         return scene;
         
     };
     
     
-    // STAGE 1
-    game.stage01 = function( ) {
+                
+    //game.sound = game.assets[BGM[0]].clone();
+    //console.log(BGM[0]);
+    
+    
+    // game stage
+    game.stage = function( ) {
         var scene = new Scene ();
         var bg = new Sprite(320, 320);
         bg.image = game.assets[ IMG[3] ];
@@ -159,9 +166,14 @@ window.onload = function() {
         
         // apple
         bg.addEventListener(Event.ENTER_FRAME, function( ) {
+            var progress = parseInt(game.frame/game.fps);
+                    console.log(progress);
             if(game.tick % 12 == 0 ) {
                 var speed = 3 + Math.floor(Math.random() * 6 );
                 var speed02 = 3 + Math.floor(Math.random() * 4 );
+                
+                        //game.sound.play();
+                
                 new Apple(scene, speed, bear);
                 new NibbleApple(scene, speed02, bear);
             }
@@ -178,27 +190,23 @@ window.onload = function() {
         return scene;
     };
     
-    /*
-    //STAGE 2
-    game.stage02 = function( ) {
+    //GAME OVER
+    game.gameover = function( ) {
         var scene = new Scene ();
         var bg = new Sprite(320, 320);
-        bg.image = game.assets[ IMG[4] ];
+        bg.image = game.assets[ IMG[9] ];
         scene.addChild(bg);
-        bg.addEventListener(Event.TOUCH_START, function(e) {
-            game.pushScene(game.stage03());
-        });
         return scene;
     };
     
-    //STAGE 3
-    game.stage03 = function( ) {
+    //GAME CLEAR
+    game.gameclear = function( ) {
         var scene = new Scene ();
         var bg = new Sprite(320, 320);
-        bg.image = game.assets[ IMG[5] ];
+        bg.image = game.assets[ IMG[10] ];
         scene.addChild(bg);
         return scene;
-    };*/
-
+    };
+    
     game.start();
 };
