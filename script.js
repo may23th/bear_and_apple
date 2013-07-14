@@ -173,7 +173,7 @@ window.onload = function() {
         timeLabel.color = '#FFFFFF';
         scene.addChild(timeLabel);
         
-        var limitTime = 30;
+        var limitTime = 100;
         var progress;
         
         // スコア
@@ -184,24 +184,40 @@ window.onload = function() {
         scoreLabel.color = '#FFFFFF';
         scene.addChild(scoreLabel);
         
-        
+        //
+        var NibappFreq = 12;
+        var appFreq = 12;
         
         // apple
         bg.addEventListener(Event.ENTER_FRAME, function( ) {
             progress = limitTime - parseInt(game.frame/game.fps);
             scoreLabel.text = 'りんごの数: ' + game.score + ' 個';
-            timeLabel.text = 'Time: ' + progress +' 秒';
+            timeLabel.text = '残り時間: ' + progress +' 秒';
+            
+            if( game.score >= 150 ){
+                bg.image = game.assets[ IMG[4] ];
+                NibappFreq = 18;
+                appFreq = 6;
+            }
+            if ( game.score >= 300 ){
+                bg.image = game.assets[ IMG[5] ];
+                NibappFreq = 21;
+                appFreq = 3;
+            }
+            
             // リンゴの表示
-            if(game.tick % 12 == 0 ) {
+            if(game.tick % NibappFreq == 0 ) {
                 var speed = 3 + Math.floor(Math.random() * 6 );
-                var speed02 = 3 + Math.floor(Math.random() * 4 );
-                
                         //game.sound.play();
-                
                 new Apple(scene, speed, bear);
+            }
+            
+            if(game.tick % appFreq == 0 ){
+                var speed02 = 3 + Math.floor(Math.random() * 4 );
                 new NibbleApple(scene, speed02, bear);
             }
             game.tick++;
+            
             if( progress <= 0 ){
                 game.pushScene(game.gameclear());
         } 
