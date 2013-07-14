@@ -9,15 +9,17 @@ window.onload = function() {
     var game = new Game(320, 320);
     game.fps = 16;
     game.tick = 0;
+    game.score = 0;
     game.preload(IMG, BGM);
     
     var mainAPPLE = enchant.Class.create(enchant.Sprite,{
-        initialize: function(scene, speed, bear){
+        initialize: function(scene, speed, bear, score){
             enchant.Sprite.call(this, 16, 16);
             this.speed = speed;
             this.x = Math.random() * 300;
             this.y = -16;
             this.bear = bear;
+            this.score = score;
             this.addEventListener(Event.ENTER_FRAME, function() {
                 this.y += this.speed;
         
@@ -27,6 +29,7 @@ window.onload = function() {
                 //クマと衝突
                 if (bear.x < this.x && bear.x + bear.width > this.x) {
                     if(bear.y - 13 < this.y && bear.y + bear.height > this.y) {
+                        game.score += this.score;
                         scene.removeChild(this);
                     }
                 } 
@@ -42,7 +45,7 @@ window.onload = function() {
     
     var Apple = enchant.Class.create(mainAPPLE,{
         initialize: function(scene, speed, bear){
-            mainAPPLE.call(this, scene, speed, bear);
+            mainAPPLE.call(this, scene, speed, bear, 10);
             this.image = game.assets[ IMG[6] ];
             scene.addChild(this);
         }
@@ -50,7 +53,7 @@ window.onload = function() {
     
     var NibbleApple = enchant.Class.create(mainAPPLE,{
         initialize: function(scene, speed, bear){
-            mainAPPLE.call(this, scene, speed, bear);
+            mainAPPLE.call(this, scene, speed, bear, 3);
             this.image = game.assets[ IMG[7] ];
             scene.addChild(this);
         }
@@ -165,16 +168,27 @@ window.onload = function() {
         });
         
         // 時間
-            timeLabel = new Label();
-            timeLabel.moveTo(245,5);
-            timeLabel.font = " 12px monospace";
-            timeLabel.text = 'Time: ';
-            timeLabel.color = '#999999';
-            scene.addChild(timeLabel);
+        timeLabel = new Label();
+        timeLabel.moveTo(245,5);
+        timeLabel.font = "10px monospace";
+        timeLabel.text = 'Time: ';
+        timeLabel.color = '#FFFFFF';
+        scene.addChild(timeLabel);
+        
+        // スコア
+        scoreLabel = new Label();
+        scoreLabel.moveTo(10,5);
+        scoreLabel.font = "10 px monospace";
+        scoreLabel.text = 'Score: ';
+        scoreLabel.color = '#FFFFFF';
+        scene.addChild(scoreLabel);
+        
+        
         
         // apple
         bg.addEventListener(Event.ENTER_FRAME, function( ) {
             var progress = parseInt(game.frame/game.fps);
+            scoreLabel.text = 'Score: ' + game.score + 'pt';
             timeLabel.text = 'Time: ' + progress + '秒';
             // リンゴの表示
             if(game.tick % 12 == 0 ) {
