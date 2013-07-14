@@ -2,7 +2,7 @@ var STATUS_WALK = 1;
 
 enchant();
 
-var IMG =['img/bg.png','img/title.png','img/operation.png','img/stage01.png','img/stage02.png','img/stage03.png','img/apple.png','img/apple_ks.png','img/bear.png','img/gameover.png','img/gameclear.png'];
+var IMG =['img/bg.png','img/title.png','img/operation.png','img/stage01.png','img/stage02.png','img/stage03.png','img/apple.png','img/apple_ks.png','img/bear.png','img/gameclear.png'];
 var BGM = ['bgm/jingle.mp3'];
 
 window.onload = function() {
@@ -110,9 +110,7 @@ window.onload = function() {
     game.onload = function () {
         var bg = new Sprite(320, 320);
         bg.image = game.assets[ IMG[0] ];
-        bg.addEventListener(Event.TOUCH_START, function(e) {
-            game.pushScene(game.TitleScene());
-        });
+        game.pushScene(game.TitleScene());
         game.rootScene.addChild(bg);
     
     };
@@ -175,6 +173,9 @@ window.onload = function() {
         timeLabel.color = '#FFFFFF';
         scene.addChild(timeLabel);
         
+        var limitTime = 30;
+        var progress;
+        
         // スコア
         scoreLabel = new Label();
         scoreLabel.moveTo(10,5);
@@ -187,9 +188,9 @@ window.onload = function() {
         
         // apple
         bg.addEventListener(Event.ENTER_FRAME, function( ) {
-            var progress = parseInt(game.frame/game.fps);
-            scoreLabel.text = 'Score: ' + game.score + 'pt';
-            timeLabel.text = 'Time: ' + progress + '秒';
+            progress = limitTime - parseInt(game.frame/game.fps);
+            scoreLabel.text = 'りんごの数: ' + game.score + ' 個';
+            timeLabel.text = 'Time: ' + progress +' 秒';
             // リンゴの表示
             if(game.tick % 12 == 0 ) {
                 var speed = 3 + Math.floor(Math.random() * 6 );
@@ -201,24 +202,17 @@ window.onload = function() {
                 new NibbleApple(scene, speed02, bear);
             }
             game.tick++;
+            if( progress <= 0 ){
+                game.pushScene(game.gameclear());
+        } 
         });
         
         var pad = new Pad();
         pad.x = 0;
         pad.y = 150;
         scene.addChild(pad);
+               
         
-                
-        
-        return scene;
-    };
-    
-    //GAME OVER
-    game.gameover = function( ) {
-        var scene = new Scene ();
-        var bg = new Sprite(320, 320);
-        bg.image = game.assets[ IMG[9] ];
-        scene.addChild(bg);
         return scene;
     };
     
@@ -226,7 +220,7 @@ window.onload = function() {
     game.gameclear = function( ) {
         var scene = new Scene ();
         var bg = new Sprite(320, 320);
-        bg.image = game.assets[ IMG[10] ];
+        bg.image = game.assets[ IMG[9] ];
         scene.addChild(bg);
         return scene;
     };
